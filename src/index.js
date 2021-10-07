@@ -1,8 +1,8 @@
 const express = require('express');
-const mongoose = require('mongoose');
 const cors = require('cors');
 const routes = require('./routes');
 require('dotenv').config();
+const MongoHelper = require('./infra/helpers/mongo-helpers');
 
 const {
   DB_USER,
@@ -14,13 +14,7 @@ const {
 
 const url = `mongodb://${DB_USER}:${DB_PASS}@${DB_HOST}/${DB_NAME}`;
 
-mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => {
-    console.log('MongoDB is connected');
-  })
-  .catch((err) => {
-    console.error('Error on connecting to MongoDB', err);
-  });
+MongoHelper.connect(url);
 
 const app = express();
 app.use(cors());
