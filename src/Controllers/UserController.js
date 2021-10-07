@@ -8,7 +8,7 @@ const hash = require('../Utils/hashPass');
 const SignUpUser = require('../Interfaces/SignUpUser');
 const AcessUser = require('../Interfaces/AcessUser');
 const SignUpPut = require('../Interfaces/signUpPut');
-const Recovery = require('../Interfaces/LoginUser');
+const Recovery = require('../Interfaces/RecoveryUser');
 // ROTAS
 
 const access = async (req, res) => {
