@@ -17,7 +17,7 @@ METRICS_SONAR = [
                'tests',
                'test_execution_time',
                'test_errors',
-               'test_failures’, 
+               'test_failures', 
                'security_rating',
                'reliability_rating'
 ]
