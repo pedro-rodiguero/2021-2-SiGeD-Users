@@ -8,8 +8,8 @@ jobs:
     - uses: actions/checkout@v2
       with:
         fetch-depth: 0
-    - name: Get main
-      run:  git fetch origin main
+    - name: Get master
+      run:  git fetch origin master
     - name: Instalar dependencias
       run:  npm install
     - name: Instalar Jest
