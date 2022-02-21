@@ -8,18 +8,18 @@ TODAY = datetime.now()
 
 METRICS_SONAR = [
     'files',
-               'functions',
-               'complexity',
-               'comment_lines_density',
-               'duplicated_lines_density',
-               'coverage',
-               'ncloc',
-               'tests',
-               'test_execution_time',
-               'test_errors',
-               'test_failures', 
-               'security_rating',
-               'reliability_rating'
+    'functions',
+    'complexity',
+    'comment_lines_density',
+    'duplicated_lines_density',
+    'coverage',
+    'ncloc',
+    'tests',
+    'test_execution_time',
+    'test_errors',
+    'test_failures', 
+    'security_rating',
+    'reliability_rating'
 ]
 
 BASE_URL = 'https://sonarcloud.io/api/measures/component_tree?component='
@@ -32,7 +32,7 @@ if __name__ == '__main__':
     response = requests.get(f'{BASE_URL}{REPO}&metricKeys={",".join(METRICS_SONAR)}&ps=500')
     j = json.loads(response.text)
 
-    path_time =  # caminho para o arquivo
+    path_time =  f'./test-results.json'
     with open(path_time, 'r') as f:
         json_time = json.loads(f.read())
 
