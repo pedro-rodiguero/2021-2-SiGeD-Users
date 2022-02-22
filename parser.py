@@ -88,7 +88,6 @@ if __name__ == '__main__':
         if path in df.keys():
             for key in df[path].keys():
                 component['measures'].append({ 'metric': key, 'value': df[path][key] })
-
     with open(file_path, 'w') as fp:
         fp.write(json.dumps(j))
         fp.close()
