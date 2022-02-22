@@ -2,16 +2,14 @@ name: Metrics
 on: [push, pull_request]
 
 jobs:
-  release:
+  test:
     runs-on: "ubuntu-latest"
     steps:
       - uses: actions/checkout@v2
-        with:
-          # Disabling shallow clone is recommended for improving relevancy of reporting
-          fetch-depth: 0
-
       - name: Executar testes
         run: docker network create siged_backend && docker-compose run api_users bash -c  "yarn && yarn jest --coverage --forceExit --outputFile=test.json --json"
 
       - name: Coletar métricas
-        run: python parser.py fga-eps-mds_${{ github.event.repository.name }}
+        run: |
+        pip3 install xmltodict
+        python3 parser.py fga-eps-mds_${{ github.event.repository.name }}
