@@ -11,5 +11,5 @@ jobs:
 
       - name: Coletar métricas
         run: |
-        pip3 install xmltodict
-        python3 parser.py fga-eps-mds_${{ github.event.repository.name }}
+          pip3 install xmltodict
+          python3 parser.py fga-eps-mds_${{ github.event.repository.name }}
