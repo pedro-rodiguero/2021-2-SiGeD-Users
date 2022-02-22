@@ -47,6 +47,6 @@ if __name__ == '__main__':
         component['measures'].append({ 'metric': 'test', 'value': test })
         component['measures'].append({ 'metric': 'test_execution_time', 'value': test_execution_time })
 
-    with open(file_path, 'w') as fp:
+    with open(file_path, 'w+') as fp:
         fp.write(json.dumps(j))
         fp.close()
