@@ -2,8 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const routes = require('./routes');
-const dotenv = require("dotenv");
-dotenv.config();
+require('dotenv').config();
 
 const {
   DB_USER,
