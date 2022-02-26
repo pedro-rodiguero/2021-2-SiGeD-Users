@@ -17,11 +17,3 @@ jobs:
           heroku_email: epssiged@gmail.com
           usedocker: true
           env_file: ".env"
-
-      - name: Set env file
-        run: |
-          cd 2021-2-SiGeD-Users
-          git checkout master
-          git checkout .
-          git pull origin master
-          cp main.env .env
