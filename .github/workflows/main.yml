@@ -16,10 +16,10 @@ jobs:
           heroku_app_name: siged-users #Must be unique in Heroku
           heroku_email: epssiged@gmail.com
           script: |
-          cd 2021-2-SiGeD-Users
-          docker-compose down
-          git checkout master
-          git checkout .
-          git pull origin master
-          cp deploy.env .env
-          docker-compose up --build -d
+            cd 2021-2-SiGeD-Users
+            docker-compose down
+            git checkout master
+            git checkout .
+            git pull origin master
+            cp deploy.env .env
+            docker-compose up --build -d
