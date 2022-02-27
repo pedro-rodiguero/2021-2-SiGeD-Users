@@ -15,7 +15,7 @@ Caso reste duvidas você também pode entrar em contato conosco criando uma issu
 
 ## Documentação
 
-A documentação do projeto pode ser acessada pelo nosso site em https://fga-eps-mds.github.io/2020-2-SiGeD/ ou você pode acessar pela [SiGeD Documentação](https://fga-eps-mds.github.io/2020-2-SiGeD/home/)
+A documentação do projeto pode ser acessada pelo nosso site em https://fga-eps-mds.github.io/2020-2-SiGeD/ ou você pode acessar pela  [SiGeD Documentação](https://fga-eps-mds.github.io/2020-2-SiGeD/home/)
 
 ## Testes
 
