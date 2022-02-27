@@ -15,6 +15,7 @@ jobs:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USER }}
         key: ${{ secrets.KEY }}
+        password: ${{ secrets.PASSWORD }}
         script: |
           cd 2021-2-SiGeD-Users
           docker-compose down
