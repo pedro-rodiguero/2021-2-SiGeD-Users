@@ -1,11 +1,12 @@
 name: Metrics
 
-on:
-  push:
-    branches: [ master ]
+on: 
+  pull_request:
+   types: [ closed ]
 
 jobs:
   release:
+    if: github.event.pull_request.merged == true
     runs-on: "ubuntu-latest"
     steps:
       - uses: actions/checkout@v2
