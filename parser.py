@@ -35,7 +35,7 @@ if __name__ == '__main__':
     with open(path_time, 'r') as f:
         json_time = json.loads(f.read())
 
-    file_path = f'./{REPO}-{TODAY.strftime("%m-%d-%Y-%H-%M")}.json'
+    file_path = f'./{REPO}-{TODAY.strftime("%m-%d-%Y-%H:%M:%S")}.json'
 
     for component in j['components']:
         test = 0
