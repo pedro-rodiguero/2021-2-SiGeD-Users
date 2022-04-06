@@ -1,6 +1,11 @@
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
+  open: {
+    type: Boolean,
+    default: true,
+    require: true,
+  },
   name: {
     type: String,
     require: [true],

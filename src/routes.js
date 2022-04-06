@@ -14,6 +14,6 @@ routes.post('/login', UserController.login);
 routes.post('/recover-password', UserController.recoverPassword);
 routes.put('/change-password/:id', verify.verifyJWT, UserController.changePassword);
 routes.put('/users/update/:id', verify.verifyJWT, UserController.signUpPut);
-routes.delete('/users/delete/:id', verify.verifyJWT, UserController.signUpDelete);
+routes.delete('/users/delete/:id', verify.verifyJWT, UserController.toggleUser);
 
 module.exports = routes;
