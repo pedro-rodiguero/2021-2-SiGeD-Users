@@ -20,9 +20,13 @@ const access = async (req, res) => {
 };
 
 const signUpGet = async (req, res) => {
-  const users = await User.find();
-
+  const users = await User.find({ open: true });
+  console.log(users);
   return res.status(200).json(users);
+
+  /*const users = await User.find();
+
+  return res.status(200).json(users);*/
 };
 
 const signUpPost = async (req, res) => {
@@ -95,15 +99,38 @@ const signUpPut = async (req, res) => {
   }
 };
 
-const signUpDelete = async (req, res) => {
+const toggleUser = async (req, res) => {
   const { id } = req.params;
 
   try {
+    const userFound = await User.findOne({ _id: id });
+
+    let { open } = userFound;
+
+    open = !userFound.open;
+
+    const updateStatus = await User.findOneAndUpdate(
+      { _id: id },
+      {
+        open,
+        updatedAt: moment
+          .utc(moment.tz('America/Sao_Paulo').format('YYYY-MM-DDTHH:mm:ss'))
+          .toDate(),
+      },
+      { new: true },
+      (user) => user,
+    );
+    return res.json(updateStatus);
+  } catch {
+    return res.status(400).json({ err: 'Invalid ID' });
+  }
+
+  /*try {
     await User.deleteOne({ _id: id });
     return res.json({ message: 'User has been deleted' });
   } catch (error) {
     return res.status(404).json({ error: 'It was not possible to find an user with this id.' });
-  }
+  }*/
 };
 
 const login = async (req, res) => {
@@ -186,7 +213,7 @@ const changePassword = async (req, res) => {
 };
 
 const newestFourUsersGet = async (req, res) => {
-  const users = await User.find().limit(4).sort({ createdAt: -1 });
+  const users = await User.find({ open: true }).limit(4).sort({ createdAt: -1 });
 
   return res.status(200).json(users);
 };
@@ -195,7 +222,7 @@ module.exports = {
   signUpGet,
   signUpPost,
   signUpPut,
-  signUpDelete,
+  toggleUser,
   login,
   access,
   recoverPassword,
