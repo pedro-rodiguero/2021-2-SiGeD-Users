@@ -4,7 +4,7 @@ const validateEmail = (email) => {
 };
 
 const validateName = (name) => {
-  const regex = /^[a-zA-Z ]{2,30}$/;
+  const regex = /^[a-zA-Z ]{2,50}$/;
   return (regex.test(name) && name !== undefined);
 };
 
