@@ -7,8 +7,6 @@ const validation = require('../Utils/validate');
 const hash = require('../Utils/hashPass');
 const mailer = require('../Utils/mailer');
 
-// ROTAS
-
 const access = async (req, res) => {
   const { id } = req.params;
   try {
@@ -20,13 +18,24 @@ const access = async (req, res) => {
 };
 
 const signUpGet = async (req, res) => {
-  const users = await User.find({ open: true });
-  console.log(users);
+
+  const { sector, open } = req.query;
+
+  const mongoQuery = {};
+
+  if (typeof open === 'boolean')
+    mongoQuery.open = open;
+  else if (open !== 'any')
+    mongoQuery.open = true;
+
+  if (sector) {
+    mongoQuery.sector = sector;
+  }
+
+  const users = await User.find(mongoQuery).select({ pass: 0, temporaryPassword: 0, open: 0, updatedAt: 0, createdAt: 0, _v: 0 });
+
   return res.status(200).json(users);
 
-  /*const users = await User.find();
-
-  return res.status(200).json(users);*/
 };
 
 const signUpPost = async (req, res) => {
@@ -105,9 +114,7 @@ const toggleUser = async (req, res) => {
   try {
     const userFound = await User.findOne({ _id: id });
 
-    let { open } = userFound;
-
-    open = !userFound.open;
+    const open = !userFound.open;
 
     const updateStatus = await User.findOneAndUpdate(
       { _id: id },

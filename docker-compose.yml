@@ -22,13 +22,12 @@ services:
     container_name: db_users
     image: mongo:4.4
     restart: always
+    ports:
+      - "3009:27017"
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: password
       MONGO_INITDB_DATABASE: root-db
     env_file: .env
     volumes:
-      - ./db/mongo-init.sh:/docker-entrypoint-initdb.d/mongo-init.sh:ro
       - ./db/.dbshell:/home/mongodb/.dbshell
       - mongodb:/data/db
     networks: 
