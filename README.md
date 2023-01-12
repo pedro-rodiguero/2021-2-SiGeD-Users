@@ -25,6 +25,7 @@ docker-compose run api_users bash -c  "yarn && yarn jest --coverage --forceExit"
 
 O arquivo .env possui configurações iniciais que podem ser alteradas de acordo com a necessidade. São elas:
  - SECRET: chave para criptografia das senhas
+ - API_CONTEXT: indica o contexto que a aplicação está rodando, em ambientes que não o `production` não é necessário o envio de email na criação do usuário. Valores possíveis: (dev | production)
  - DB_USER: usuário de acesso ao banco de dados
  - DB_PASS: senha de acesso ao banco de dados
  - DB_NAME: nome da base de dados
@@ -38,6 +39,7 @@ Veja o exemplo abaixo:
 
 ```
 SECRET=chavedesegredo
+API_CONTEXT=dev
 DB_USER=api_user
 DB_PASS=api_password
 DB_NAME=api_database

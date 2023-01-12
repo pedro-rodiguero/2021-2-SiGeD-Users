@@ -6,6 +6,7 @@ const User = require('../Models/UserSchema');
 const validation = require('../Utils/validate');
 const hash = require('../Utils/hashPass');
 const mailer = require('../Utils/mailer');
+const { createUserWithTemporaryPass } = require('../Services/UserService');
 
 const access = async (req, res) => {
   const { id } = req.params;
@@ -40,38 +41,45 @@ const signUpGet = async (req, res) => {
 
 const signUpPost = async (req, res) => {
   const {
-    name, email, role, sector, image,
+    name, email, role, sector, image, pass
   } = req.body;
-  const { transporter } = mailer;
 
   const temporaryPassword = crypto.randomBytes(8).toString('hex');
 
+  const context = process.env.API_CONTEXT
+  
   const errorMessage = validation.validate(name, email, role, temporaryPassword);
 
+  // Validate request body
   if (errorMessage.length) {
     return res.json({ error: errorMessage });
   }
 
   try {
-    const user = await User.create({
-      name,
-      email,
-      role,
-      sector,
-      image,
-      pass: await hash.hashPass(temporaryPassword),
-      temporaryPassword: true,
-      createdAt: moment.utc(moment.tz('America/Sao_Paulo').format('YYYY-MM-DDTHH:mm:ss')).toDate(),
-      updatedAt: moment.utc(moment.tz('America/Sao_Paulo').format('YYYY-MM-DDTHH:mm:ss')).toDate(),
-    });
+    if (context == 'production') {
+      const user = await createUserWithTemporaryPass({
+        name,
+        email,
+        role,
+        sector,
+        image,
+        temporaryPassword,
+      });
 
-    transporter.sendMail({
-      from: process.env.email,
-      to: email,
-      subject: 'Senha temporária SiGeD',
-      text: `A sua senha temporária é: ${temporaryPassword}`,
-    });
-    return res.json(user);
+      return res.json(user);
+    } else {
+      const user = await createUserWithTemporaryPass({
+        name,
+        email,
+        role,
+        sector,
+        image,
+        pass,
+      });
+
+      return res.json(user);
+    } 
+
   } catch (error) {
     return res.status(400).json({ duplicated: error.keyValue });
   }
