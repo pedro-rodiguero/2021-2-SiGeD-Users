@@ -6,9 +6,13 @@ const User = require('../Models/UserSchema');
 const validation = require('../Utils/validate');
 const hash = require('../Utils/hashPass');
 const mailer = require('../Utils/mailer');
-const { createUserWithTemporaryPass } = require('../Services/UserService');
+const { createUserWithTemporaryPass, createUserWithDefinitePass, updateUserWithId, toggleUserStatus } = require('../Services/UserService');
 
-const access = async (req, res) => {
+const getSingleUser = async (req, res) => {
+  /**
+   * Finds a single user from given id
+   */
+
   const { id } = req.params;
   try {
     const user = await User.findOne({ _id: id });
@@ -18,7 +22,11 @@ const access = async (req, res) => {
   }
 };
 
-const signUpGet = async (req, res) => {
+const getAllUsers = async (req, res) => {
+  /**
+   * Retrieves all users in the databse.
+   * (Omits passwords and timestamps fields)
+   */
 
   const { sector, open } = req.query;
 
@@ -39,7 +47,7 @@ const signUpGet = async (req, res) => {
 
 };
 
-const signUpPost = async (req, res) => {
+const createUser = async (req, res) => {
   const {
     name, email, role, sector, image, pass
   } = req.body;
@@ -68,7 +76,7 @@ const signUpPost = async (req, res) => {
 
       return res.json(user);
     } else {
-      const user = await createUserWithTemporaryPass({
+      const user = await createUserWithDefinitePass({
         name,
         email,
         role,
@@ -85,7 +93,7 @@ const signUpPost = async (req, res) => {
   }
 };
 
-const signUpPut = async (req, res) => {
+const updateUser = async (req, res) => {
   const { id } = req.params;
   const {
     name, email, role, sector, image,
@@ -98,15 +106,13 @@ const signUpPut = async (req, res) => {
   }
 
   try {
-    const updateReturn = await User.findOneAndUpdate({ _id: id }, {
+    const updateReturn = await updateUserWithId(id, {
       name,
       email,
       role,
       sector,
-      image,
-      updatedAt: moment.utc(moment.tz('America/Sao_Paulo').format('YYYY-MM-DDTHH:mm:ss')).toDate(),
-    },
-    { new: true });
+      image
+    })
     return res.json(updateReturn);
   } catch (error) {
     if (error.keyValue) {
@@ -120,32 +126,11 @@ const toggleUser = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const userFound = await User.findOne({ _id: id });
-
-    const open = !userFound.open;
-
-    const updateStatus = await User.findOneAndUpdate(
-      { _id: id },
-      {
-        open,
-        updatedAt: moment
-          .utc(moment.tz('America/Sao_Paulo').format('YYYY-MM-DDTHH:mm:ss'))
-          .toDate(),
-      },
-      { new: true },
-      (user) => user,
-    );
+    const updateStatus = await toggleUserStatus(id)
     return res.json(updateStatus);
   } catch {
     return res.status(400).json({ err: 'Invalid ID' });
   }
-
-  /*try {
-    await User.deleteOne({ _id: id });
-    return res.json({ message: 'User has been deleted' });
-  } catch (error) {
-    return res.status(404).json({ error: 'It was not possible to find an user with this id.' });
-  }*/
 };
 
 const login = async (req, res) => {
@@ -234,12 +219,12 @@ const newestFourUsersGet = async (req, res) => {
 };
 
 module.exports = {
-  signUpGet,
-  signUpPost,
-  signUpPut,
+  getAllUsers,
+  createUser,
+  updateUser,
   toggleUser,
   login,
-  access,
+  getSingleUser,
   recoverPassword,
   changePassword,
   newestFourUsersGet,
