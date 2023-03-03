@@ -1,40 +1,27 @@
-const validateEmail = (email) => {
+const isEmailValid = (email) => {
   const regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  return (regex.test(email) && email !== undefined);
+  return regex.test(email) && email;
 };
 
-const validateName = (name) => {
-  const regex = /^[a-zA-Z ]{2,50}$/;
-  return (regex.test(name) && name !== undefined);
-};
+const isNameValid = (name) => /^[a-zA-Z ]{2,50}$/.test(name) && name;
 
-const validateRole = (role) => {
-  const valid = ['admin', 'professional', 'receptionist'];
+const isRoleValid = (role) => ['admin', 'professional', 'receptionist'].includes(role);
 
-  if (valid.includes(role)) {
-    return true;
-  }
-  return false;
-};
+const isPassValid = (pass) => pass && pass.length >= 6;
 
-const validatePass = (pass) => {
-  if (!pass || pass.length < 6) {
-    return false;
-  }
-  return true;
-};
-
-const validate = (name, email, role) => {
+const validate = (fields) => {
   const err = [];
-
-  if (!validateName(name)) {
-    err.push('invalid name');
-  } if (!validateEmail(email)) {
-    err.push('invalid email');
-  } if (!validateRole(role)) {
-    err.push('invalid role');
-  }
+  Object.keys(fields).forEach((field) => {
+    const validationFunction = validators[field];
+    if (!validationFunction(fields[field])) { err.push(`invalid ${field}`); }
+  })
   return err;
 };
 
-module.exports = { validate, validatePass };
+const validators = {
+  name: isNameValid,
+  email: isEmailValid,
+  role: isRoleValid,
+};
+
+module.exports = { validate, isPassValid };

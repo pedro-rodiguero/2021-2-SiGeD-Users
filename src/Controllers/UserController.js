@@ -6,13 +6,9 @@ const User = require('../Models/UserSchema');
 const validation = require('../Utils/validate');
 const hash = require('../Utils/hashPass');
 const mailer = require('../Utils/mailer');
-const { createUserWithTemporaryPass, createUserWithDefinitePass, updateUserWithId, toggleUserStatus } = require('../Services/UserService');
+const { createUserWithPass, updateUserWithId, toggleUserStatus } = require('../Services/UserService');
 
 const getSingleUser = async (req, res) => {
-  /**
-   * Finds a single user from given id
-   */
-
   const { id } = req.params;
   try {
     const user = await User.findOne({ _id: id });
@@ -23,10 +19,6 @@ const getSingleUser = async (req, res) => {
 };
 
 const getAllUsers = async (req, res) => {
-  /**
-   * Retrieves all users in the databse.
-   * (Omits passwords and timestamps fields)
-   */
 
   const { sector, open } = req.query;
 
@@ -48,48 +40,20 @@ const getAllUsers = async (req, res) => {
 };
 
 const createUser = async (req, res) => {
-  const {
-    name, email, role, sector, image, pass
-  } = req.body;
+  const { name, email, role } = req.body;
 
-  const temporaryPassword = crypto.randomBytes(8).toString('hex');
+  const errorMessages = validation.validate({ name, email, role });
 
-  const context = process.env.API_CONTEXT
-  
-  const errorMessage = validation.validate(name, email, role, temporaryPassword);
-
-  // Validate request body
-  if (errorMessage.length) {
-    return res.json({ error: errorMessage });
+  if (errorMessages.length) {
+    console.log('Error list: ', errorMessages);
+    return res.json({ error: errorMessages });
   }
 
   try {
-    if (context == 'production') {
-      const user = await createUserWithTemporaryPass({
-        name,
-        email,
-        role,
-        sector,
-        image,
-        temporaryPassword,
-      });
-
-      return res.json(user);
-    } else {
-      const user = await createUserWithDefinitePass({
-        name,
-        email,
-        role,
-        sector,
-        image,
-        pass,
-      });
-
-      return res.json(user);
-    } 
-
+    const user = createUserWithPass(req.body);
+    return res.json(user);
   } catch (error) {
-    return res.status(400).json({ duplicated: error.keyValue });
+    return res.status(400).json(error);
   }
 };
 
@@ -99,7 +63,7 @@ const updateUser = async (req, res) => {
     name, email, role, sector, image,
   } = req.body;
 
-  const errorMessage = validation.validate(name, email, role);
+  const errorMessage = validation.validate({ name, email, role });
 
   if (errorMessage.length) {
     return res.status(400).json({ message: errorMessage });
@@ -190,9 +154,7 @@ const changePassword = async (req, res) => {
     pass,
   } = req.body;
 
-  const validateResult = validation.validatePass(pass);
-
-  if (!validateResult) {
+  if (!validation.isPassValid(pass)) {
     return res.status(400).json({ error: 'Password too short' });
   }
 
