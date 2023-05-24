@@ -14,7 +14,7 @@ jobs:
           fetch-depth: 0
 
       - name: Executar testes
-        run:  docker network create siged_backend && docker-compose run api_users bash -c  "yarn && yarn jest --coverage --outputFile=test-results.json --json --forceExit"
+        run:  docker-compose run api_users bash -c  "yarn && yarn jest --coverage --outputFile=test-results.json --json --forceExit"
 
       - name: Coletar métricas
         run: |
